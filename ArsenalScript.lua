@@ -1,3 +1,5 @@
+local player = game.Players.LocalPlayer
+local gui = script.Parent
 local Players = game:GetService("Players")
 local RunService = game:GetService("RunService")
 local Camera = workspace.CurrentCamera
@@ -351,3 +353,11 @@ EnableESP()
 EnableAFKFarm()
 CreateCrosshair()
 CreateCircleAimbot()
+
+
+local player = game.Players.LocalPlayer
+local gui = script.Parent 
+
+player.Respawned:Connect(function()
+    gui.Enabled = true
+end)
