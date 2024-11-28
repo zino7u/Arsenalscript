@@ -499,7 +499,7 @@ local function CreateMainGUI()
     EnableAFKFarm()
     CreateCrosshair()
     CreateCircleAimbot()
-
+do
     wait(scriptExecutionTime)
     print("Script ended!") -- Effect ends here
 end
