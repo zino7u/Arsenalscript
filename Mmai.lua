@@ -186,10 +186,11 @@ NextButton.MouseButton1Click:Connect(function()
             end
 
             local function IsVisible(targetPart)
-                local ray = Ray.new(Camera.CFrame.Position, (targetPart.Position - Camera.CFrame.Position).unit * Aimbot.MaxDistance)
-                local hit, _ = workspace:FindPartOnRayWithIgnoreList(ray, {LocalPlayer.Character, Camera})
-                return hit and hit:IsDescendantOf targetPart.Parent
-            end
+    local ray = Ray.new(Camera.CFrame.Position, (targetPart.Position - Camera.CFrame.Position).unit * Aimbot.MaxDistance)
+    local hit, _ = workspace:FindPartOnRayWithIgnoreList(ray, {LocalPlayer.Character, Camera})
+    return hit and hit:IsDescendantOf(targetPart.Parent) -- Diese Zeile ist korrekt, keine Klammern notwendig
+end
+
 
             local function GetClosestTarget()
                 local closestTarget = nil
