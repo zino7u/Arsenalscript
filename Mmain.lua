@@ -185,25 +185,26 @@ NextButton.MouseButton1Click:Connect(function()
     end
 
     local function GetClosestTarget()
-        local closestTarget = nil
-        local closestDistance = Aimbot.MaxDistance
+    local closestTarget = nil
+    local closestDistance = Aimbot.MaxDistance
 
-        for _, player in pairs(Players:GetPlayers()) do
-            if player ~= LocalPlayer and IsEnemy(player) and player.Character and player.Character:FindFirstChild(Aimbot.LockPart) then
-                local targetPart = player.Character[Aimbot.LockPart]
-                local distanceToTarget = (LocalPlayer.Character.HumanoidRootPart.Position - targetPart.Position).Magnitude
+    for _, player in pairs(Players:GetPlayers()) do
+        if player ~= LocalPlayer and IsEnemy(player) and player.Character and player.Character:FindFirstChild(Aimbot.LockPart) then
+            local targetPart = player.Character[Aimbot.LockPart]
+            local distanceToTarget = (LocalPlayer.Character.HumanoidRootPart.Position - targetPart.Position).Magnitude
 
-                if player.Character.Humanoid.Health > 0 and IsVisible(targetPart) then
-                    if closestTarget == nil or distanceToTarget < closestDistance then
-                        closestDistance = distanceToTarget
-                        closestTarget = player
-                    end
+            if player.Character.Humanoid.Health > 0 and IsVisible(targetPart) then
+                if closestTarget == nil or distanceToTarget < closestDistance then
+                    closestDistance = distanceToTarget
+                    closestTarget = player
                 end
             end
         end
-
-        return closestTarget
     end
+
+    return closestTarget
+end
+
 
     local function AimAt(target)
         if target and target.Character then
