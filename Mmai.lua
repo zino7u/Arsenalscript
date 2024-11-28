@@ -57,12 +57,19 @@ DiscordLink.TextColor3 = Color3.fromRGB(120, 120, 120)
 DiscordLink.BackgroundTransparency = 1
 DiscordLink.TextScaled = true
 
+-- Beispielkorrektur: Initialisierung einer Funktion
+if not setclipboard then
+    setclipboard = function() end -- Dummy-Funktion, wenn sie nicht definiert ist
+end
+
+-- Sicherstellen, dass die Funktion korrekt zugewiesen ist
 DiscordLink.MouseButton1Click:Connect(function()
     setclipboard(discordLink)
     DiscordLink.Text = "Copied to clipboard!"
     wait(2)
     DiscordLink.Text = "Join Discord for the Key!"
 end)
+
 
 local NextButton = Instance.new("TextButton", MainFrame)
 NextButton.Text = "Next"
