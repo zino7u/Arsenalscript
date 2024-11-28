@@ -1,203 +1,47 @@
 local Players = game:GetService("Players")
+local RunService = game:GetService("RunService")
+local Camera = workspace.CurrentCamera
 local LocalPlayer = Players.LocalPlayer
-local validKey = "762009"
-local discordLink = "https://discord.gg/Kj2HnR3ga2"
-local scriptExecutionTime = 6 * 60 * 60 -- 6 hours in seconds
 
-local ScreenGui = Instance.new("ScreenGui", game.CoreGui)
-ScreenGui.Name = "KeyLoginSystem"
+local Aimbot = {
+    Enabled = false,
+    LockPart = "Head",
+    MaxDistance = 1000,
+    TrackedTarget = nil
+}
 
-local MainFrame = Instance.new("Frame", ScreenGui)
-MainFrame.Size = UDim2.new(0.6, 0, 0.8, 0)
-MainFrame.Position = UDim2.new(0.2, 0, 0.1, 0)
-MainFrame.BackgroundColor3 = Color3.fromRGB(25, 25, 25)
-MainFrame.BorderSizePixel = 0
+-- Circle Aimbot
+local CircleAimbot = {
+    Enabled = false,
+    Radius = 150,  -- Circle Radius in pixels
+    Position = Vector2.new(Camera.ViewportSize.X / 2, Camera.ViewportSize.Y / 2) -- Mitte des Bildschirms
+}
 
-local UICornerMain = Instance.new("UICorner", MainFrame)
-UICornerMain.CornerRadius = UDim.new(0, 15)
+local AFKFarm = {
+    Enabled = false
+}
 
-local Title = Instance.new("TextLabel", MainFrame)
-Title.Text = "🔒 ARSENAL SCRIPT Z"
-Title.Size = UDim2.new(1, 0, 0.1, 0)
-Title.BackgroundTransparency = 1
-Title.TextColor3 = Color3.fromRGB(200, 200, 200)
-Title.TextScaled = true
-Title.Font = Enum.Font.GothamBold
+local FFA = {
+    Enabled = false
+}
 
-local KeyBox = Instance.new("TextBox", MainFrame)
-KeyBox.PlaceholderText = "Enter Key"
-KeyBox.Size = UDim2.new(0.8, 0, 0.08, 0)
-KeyBox.Position = UDim2.new(0.1, 0, 0.2, 0)
-KeyBox.Font = Enum.Font.Gotham
-KeyBox.TextColor3 = Color3.fromRGB(200, 200, 200)
-KeyBox.BackgroundColor3 = Color3.fromRGB(45, 45, 45)
-KeyBox.TextScaled = true
+local ESP = {
+    Enabled = true,
+    LinesEnabled = false,
+    Distance = 1000
+}
 
-local UICornerKeyBox = Instance.new("UICorner", KeyBox)
-UICornerKeyBox.CornerRadius = UDim.new(0, 10)
-
-local GetKeyButton = Instance.new("TextButton", MainFrame)
-GetKeyButton.Text = "Get Key"
-GetKeyButton.Size = UDim2.new(0.4, 0, 0.08, 0)
-GetKeyButton.Position = UDim2.new(0.3, 0, 0.3, 0)
-GetKeyButton.Font = Enum.Font.Gotham
-GetKeyButton.TextColor3 = Color3.fromRGB(200, 200, 200)
-GetKeyButton.BackgroundColor3 = Color3.fromRGB(75, 75, 75)
-GetKeyButton.TextScaled = true
-
-local UICornerGetKey = Instance.new("UICorner", GetKeyButton)
-UICornerGetKey.CornerRadius = UDim.new(0, 10)
-
-local DiscordLink = Instance.new("TextButton", MainFrame)
-DiscordLink.Text = "Join Discord for the Key!"
-DiscordLink.Size = UDim2.new(0.8, 0, 0.08, 0)
-DiscordLink.Position = UDim2.new(0.1, 0, 0.4, 0)
-DiscordLink.Font = Enum.Font.Gotham
-DiscordLink.TextColor3 = Color3.fromRGB(120, 120, 120)
-DiscordLink.BackgroundTransparency = 1
-DiscordLink.TextScaled = true
-
--- Beispielkorrektur: Initialisierung einer Funktion
-if not setclipboard then
-    setclipboard = function() end -- Dummy-Funktion, wenn sie nicht definiert ist
+local function IsEnemy(player)
+    return FFA.Enabled or (LocalPlayer.Team == nil or player.Team ~= LocalPlayer.Team)
 end
 
--- Sicherstellen, dass die Funktion korrekt zugewiesen ist
-DiscordLink.MouseButton1Click:Connect(function()
-    setclipboard(discordLink)
-    DiscordLink.Text = "Copied to clipboard!"
-    wait(2)
-    DiscordLink.Text = "Join Discord for the Key!"
-end)
-
-
-local NextButton = Instance.new("TextButton", MainFrame)
-NextButton.Text = "Next"
-NextButton.Size = UDim2.new(0.4, 0, 0.08, 0)
-NextButton.Position = UDim2.new(0.3, 0, 0.5, 0)
-NextButton.Font = Enum.Font.Gotham
-NextButton.TextColor3 = Color3.fromRGB(200, 200, 200)
-NextButton.BackgroundColor3 = Color3.fromRGB(75, 75, 75)
-NextButton.TextScaled = true
-
-local UICornerNext = Instance.new("UICorner", NextButton)
-UICornerNext.CornerRadius = UDim.new(0, 10)
-
-NextButton.MouseButton1Click:Connect(function()
-    if KeyBox.Text == validKey then
-        Title.Text = "Verifying..."
-        wait(2)
-        Title.Text = "Login Page"
-        
-        KeyBox:Destroy()
-        GetKeyButton:Destroy()
-        NextButton:Destroy()
-        DiscordLink:Destroy()
-
-        local EmailBox = Instance.new("TextBox", MainFrame)
-        EmailBox.PlaceholderText = "Enter Email"
-        EmailBox.Size = UDim2.new(0.8, 0, 0.08, 0)
-        EmailBox.Position = UDim2.new(0.1, 0, 0.2, 0)
-        EmailBox.Font = Enum.Font.Gotham
-        EmailBox.TextColor3 = Color3.fromRGB(200, 200, 200)
-        EmailBox.BackgroundColor3 = Color3.fromRGB(45, 45, 45)
-        EmailBox.TextScaled = true
-
-        local UICornerEmail = Instance.new("UICorner", EmailBox)
-        UICornerEmail.CornerRadius = UDim.new(0, 10)
-
-        local PasswordBox = Instance.new("TextBox", MainFrame)
-        PasswordBox.PlaceholderText = "Enter Password"
-        PasswordBox.Size = UDim2.new(0.8, 0, 0.08, 0)
-        PasswordBox.Position = UDim2.new(0.1, 0, 0.3, 0)
-        PasswordBox.Font = Enum.Font.Gotham
-        PasswordBox.TextColor3 = Color3.fromRGB(200, 200, 200)
-        PasswordBox.BackgroundColor3 = Color3.fromRGB(45, 45, 45)
-        PasswordBox.TextScaled = true
-
-        local UICornerPassword = Instance.new("UICorner", PasswordBox)
-        UICornerPassword.CornerRadius = UDim.new(0, 10)
-
-        local LoginButton = Instance.new("TextButton", MainFrame)
-        LoginButton.Text = "Login"
-        LoginButton.Size = UDim2.new(0.4, 0, 0.08, 0)
-        LoginButton.Position = UDim2.new(0.3, 0, 0.4, 0)
-        LoginButton.Font = Enum.Font.Gotham
-        LoginButton.TextColor3 = Color3.fromRGB(200, 200, 200)
-        LoginButton.BackgroundColor3 = Color3.fromRGB(75, 75, 75)
-        LoginButton.TextScaled = true
-
-        local UICornerLogin = Instance.new("UICorner", LoginButton)
-        UICornerLogin.CornerRadius = UDim.new(0, 10)
-
-        local SkipButton = Instance.new("TextButton", MainFrame)
-        SkipButton.Text = "Skip"
-        SkipButton.Size = UDim2.new(0.3, 0, 0.05, 0)
-        SkipButton.Position = UDim2.new(0.35, 0, 0.5, 0)
-        SkipButton.Font = Enum.Font.Gotham
-        SkipButton.TextColor3 = Color3.fromRGB(120, 120, 120)
-        SkipButton.BackgroundTransparency = 1
-        SkipButton.TextScaled = true
-
-        local function runScript()
-            Title.Text = "Welcome, " .. LocalPlayer.Name .. "!"
-            EmailBox:Destroy()
-            PasswordBox:Destroy()
-            LoginButton:Destroy()
-            SkipButton:Destroy()
-            wait(2)
-            MainFrame:Destroy()
-
-            -- Insert your code here
-            local Players = game:GetService("Players")
-            local RunService = game:GetService("RunService")
-            local Camera = workspace.CurrentCamera
-            local LocalPlayer = Players.LocalPlayer
-
-            local Aimbot = {
-                Enabled = false,
-                LockPart = "Head",
-                MaxDistance = 1000,
-                TrackedTarget = nil
-            }
-
-            local CircleAimbot = {
-                Enabled = false,
-                Radius = 150,
-                Position = Vector2.new(Camera.ViewportSize.X / 2, Camera.ViewportSize.Y / 2)
-            }
-
-            local AFKFarm = {
-                Enabled = false
-            }
-
-            local FFA = {
-                Enabled = false
-            }
-
-            local ESP = {
-                Enabled = true,
-                LinesEnabled = false,
-                Distance = 1000
-            }
-
-            local function IsEnemy(player)
-                return FFA.Enabled or (LocalPlayer.Team == nil or player.Team ~= LocalPlayer.Team)
-            end
-
-            local function IsVisible(targetPart)
+local function IsVisible(targetPart)
     local ray = Ray.new(Camera.CFrame.Position, (targetPart.Position - Camera.CFrame.Position).unit * Aimbot.MaxDistance)
     local hit, _ = workspace:FindPartOnRayWithIgnoreList(ray, {LocalPlayer.Character, Camera})
-    return hit and hit:IsDescendantOf(targetPart.Parent) -- Diese Zeile ist korrekt, keine Klammern notwendig
+    return hit and hit:IsDescendantOf(targetPart.Parent)
 end
 
-
-            local function GetClosestTarget()
-                local closestTarget = nil
-                local closestDistance = Aimbot.MaxDistance
-
-                for _, player in pairs(Players:GetPlayers()) do
-                    local function GetClosestTarget()
+local function GetClosestTarget()
     local closestTarget = nil
     local closestDistance = Aimbot.MaxDistance
 
@@ -227,15 +71,17 @@ local function AimAt(target)
     end
 end
 
+-- Circle Aimbot Visualisierung
 local function CreateCircleAimbot()
     local circle = Drawing.new("Circle")
     circle.Position = CircleAimbot.Position
     circle.Radius = CircleAimbot.Radius
     circle.Visible = true
-    circle.Color = Color3.fromRGB(255, 0, 0)
+    circle.Color = Color3.fromRGB(255, 0, 0)  -- Rot
     circle.Thickness = 2
-    circle.Filled = false
+    circle.Filled = false  -- Offen, nicht ausgefüllt
 
+    -- Render-Stepped für den Kreis
     RunService.RenderStepped:Connect(function()
         circle.Visible = CircleAimbot.Enabled
         circle.Position = CircleAimbot.Position
@@ -245,17 +91,20 @@ local function CreateCircleAimbot()
     return circle
 end
 
+-- Prüft, ob ein Spieler im Circle Aimbot ist
 local function IsPlayerInCircle(target)
     local targetPosition = Camera:WorldToScreenPoint(target.Character.HumanoidRootPart.Position)
     local distance = (Vector2.new(targetPosition.X, targetPosition.Y) - CircleAimbot.Position).Magnitude
     return distance <= CircleAimbot.Radius
 end
 
+-- Circle Aimbot Trigger und Zielen
 RunService.RenderStepped:Connect(function()
     if CircleAimbot.Enabled then
         local closestTarget = GetClosestTarget()
         if closestTarget and IsPlayerInCircle(closestTarget) then
             AimAt(closestTarget)
+            -- Verfolgen, solange das Ziel im Kreis bleibt
             while CircleAimbot.Enabled and closestTarget and IsPlayerInCircle(closestTarget) do
                 AimAt(closestTarget)
                 RunService.RenderStepped:Wait()
@@ -294,9 +143,26 @@ local function CreateESP(player)
         nameLabel.Parent = billboardGui
         nameLabel.Size = UDim2.new(1, 0, 1, 0)
         nameLabel.BackgroundTransparency = 1
-        nameLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
         nameLabel.Text = player.Name
-        nameLabel.TextScaled = true
+        nameLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
+        nameLabel.TextStrokeTransparency = 0.5
+        nameLabel.Font = Enum.Font.Code
+        nameLabel.TextSize = 14
+
+        -- ESP Lines
+        local line = Drawing.new("Line")
+        line.Thickness = 2
+        line.Color = Color3.fromRGB(0, 255, 0)  -- Grün
+        RunService.RenderStepped:Connect(function()
+            line.Visible = ESP.LinesEnabled
+            if player.Character and player.Character:FindFirstChild("Head") then
+                local screenPosition = Camera:WorldToViewportPoint(player.Character.Head.Position)
+                line.From = Vector2.new(Camera.ViewportSize.X / 2, Camera.ViewportSize.Y)
+                line.To = Vector2.new(screenPosition.X, screenPosition.Y)
+            else
+                line.Visible = false
+            end
+        end)
     end
 end
 
@@ -353,12 +219,9 @@ end)
 local function CreateMainGUI()
     local gui = Instance.new("ScreenGui")
     gui.Parent = LocalPlayer:WaitForChild("PlayerGui")
-        end
-    end
-end)
-                                        
+
     local mainFrame = Instance.new("Frame")
-    mainFrame.Size = UDim2.new(0, 250, 0, 450)
+    mainFrame.Size = UDim2.new(0, 250, 0, 450)  -- GUI länger gemacht
     mainFrame.Position = UDim2.new(1, -260, 0, 10)
     mainFrame.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
     mainFrame.BorderSizePixel = 0
@@ -373,7 +236,7 @@ end)
     openCloseButton.BackgroundColor3 = Color3.fromRGB(100, 100, 100)
     openCloseButton.TextColor3 = Color3.fromRGB(255, 255, 255)
     openCloseButton.Text = "Open"
-    openCloseButton.Parent = gui
+        openCloseButton.Parent = gui
     openCloseButton.Font = Enum.Font.Code
     openCloseButton.BackgroundTransparency = 0.3
 
@@ -399,7 +262,8 @@ end)
     afkFarmButton.Size = UDim2.new(0, 230, 0, 40)
     afkFarmButton.Position = UDim2.new(0, 10, 0, 150)
     afkFarmButton.BackgroundColor3 = Color3.fromRGB(70, 70, 70)
-        afkFarmButton.Text = "AFK Farm: OFF"
+    afkFarmButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+    afkFarmButton.Text = "AFK Farm: OFF"
     afkFarmButton.Parent = mainFrame
     afkFarmButton.Font = Enum.Font.Code
 
@@ -466,7 +330,7 @@ end)
 
     circleSizeSlider.MouseButton1Click:Connect(function()
         local newSize = CircleAimbot.Radius + 50
-        CircleAimbot.Radius = (newSize <= 300) and newSize or 50
+        CircleAimbot.Radius = (newSize <= 300) and newSize or 50  -- Kreisradius anpassen (Schrittweise um 50 Pixel)
         circleSizeSlider.Text = "Circle Size: " .. CircleAimbot.Radius
     end)
 
@@ -480,20 +344,10 @@ end)
         ESP.LinesEnabled = not ESP.LinesEnabled
         espLinesToggleButton.Text = "ESP Lines: " .. (ESP.LinesEnabled and "ON" or "OFF")
     end)
-
-    CreateMainGUI()
-    EnableESP()
-    EnableAFKFarm()
-    CreateCrosshair()
-    CreateCircleAimbot()
-do
-    wait(scriptExecutionTime)
-    print("Script ended!") -- Effect ends here
 end
 
-LoginButton.MouseButton1Click:Connect(runScript)
-SkipButton.MouseButton1Click:Connect(runScript)
-else
-    KeyBox.Text = "Invalid Key!"
-end
-end)
+CreateMainGUI()
+EnableESP()
+EnableAFKFarm()
+CreateCrosshair()
+CreateCircleAimbot()
