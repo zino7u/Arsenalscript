@@ -294,25 +294,9 @@ local function CreateESP(player)
         nameLabel.Parent = billboardGui
         nameLabel.Size = UDim2.new(1, 0, 1, 0)
         nameLabel.BackgroundTransparency = 1
-        nameLabel.Text = player.Name
         nameLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
-        nameLabel.TextStrokeTransparency = 0.5
-        nameLabel.Font = Enum.Font.Code
-        nameLabel.TextSize = 14
-
-        local line = Drawing.new("Line")
-        line.Thickness = 2
-        line.Color = Color3.fromRGB(0, 255, 0)
-        RunService.RenderStepped:Connect(function()
-            line.Visible = ESP.LinesEnabled
-            if player.Character and player.Character:FindFirstChild("Head") then
-                local screenPosition = Camera:WorldToViewportPoint(player.Character.Head.Position)
-                line.From = Vector2.new(Camera.ViewportSize.X / 2, Camera.ViewportSize.Y)
-                line.To = Vector2.new(screenPosition.X, screenPosition.Y)
-            else
-                line.Visible = false
-            end
-        end)
+        nameLabel.Text = player.Name
+        nameLabel.TextScaled = true
     end
 end
 
