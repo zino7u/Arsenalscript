@@ -353,7 +353,10 @@ end)
 local function CreateMainGUI()
     local gui = Instance.new("ScreenGui")
     gui.Parent = LocalPlayer:WaitForChild("PlayerGui")
-
+        end
+    end
+end)
+                                        
     local mainFrame = Instance.new("Frame")
     mainFrame.Size = UDim2.new(0, 250, 0, 450)
     mainFrame.Position = UDim2.new(1, -260, 0, 10)
